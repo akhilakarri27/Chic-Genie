@@ -23,5 +23,13 @@ dist-ssr
 *.sln
 *.sw?
 
-# Backend directory (managed separately)
-backend/
+# Python bytecode & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+backend/.venv
+backend/venv
+backend/.env
+.env.local
+
+.env

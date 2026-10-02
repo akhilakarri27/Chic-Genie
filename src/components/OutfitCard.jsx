@@ -106,12 +106,12 @@ export default function OutfitCard({ outfit, onCustomize, onWhyLook }) {
           )}
 
           {/* Dress / Saree / Jumpsuit */}
-          {outfit.dress && (
+          {(outfit.dress || outfit.saree) && (
             <div className="garment-line-item">
               <Sparkles size={15} className="garment-line-icon" />
               <div>
                 <span className="garment-line-label">Ensemble:</span>
-                <span className="garment-line-value">{outfit.dress}</span>
+                <span className="garment-line-value">{outfit.dress || outfit.saree}</span>
               </div>
             </div>
           )}

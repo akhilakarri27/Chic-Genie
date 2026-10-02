@@ -3,7 +3,7 @@
  * Handles seamless communication with the FastAPI backend.
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
 
 /**
  * Fetch personalized styling recommendations from FastAPI backend
@@ -18,33 +18,28 @@ export async function fetchRecommendations(preferences = {}, count = 3, seedOffs
   const payload = {
     preferences: {
       bodyShape: preferences.bodyShape || '',
-      styles: preferences.styles || [],
-      occasions: preferences.occasions || (preferences.occasion ? [preferences.occasion] : []),
-      occasion: preferences.occasion || null,
-      colors: preferences.colors || [],
-      colorMoods: preferences.colorMoods || (preferences.palette ? [preferences.palette] : []),
-      palette: preferences.palette || null,
-      outfitTypes: preferences.outfitTypes || (preferences.outfitType ? [preferences.outfitType] : []),
-      outfitType: preferences.outfitType || null,
-      footwear: preferences.footwear || null,
-      accessories: preferences.accessories || [],
-      jewellery: preferences.jewellery || null,
-      comfort: preferences.comfort || null,
-      season: preferences.season || null,
-      weather: preferences.weather || null,
-      preferredFit: preferences.preferredFit || preferences.fit || null,
-      fit: preferences.fit || null,
-      avoidedStyles: preferences.avoidedStyles || [],
-      avoidedColors: preferences.avoidedColors || [],
-      avoid: preferences.avoid || []
+      styles: Array.isArray(preferences.styles) ? preferences.styles : (preferences.styles ? [preferences.styles] : []),
+      occasions: Array.isArray(preferences.occasions) ? preferences.occasions : (preferences.occasion ? [preferences.occasion] : []),
+      colors: Array.isArray(preferences.colors) ? preferences.colors : (preferences.colors ? [preferences.colors] : []),
+      colorMoods: Array.isArray(preferences.colorMoods) ? preferences.colorMoods : (preferences.palette ? [preferences.palette] : []),
+      outfitTypes: Array.isArray(preferences.outfitTypes) ? preferences.outfitTypes : (preferences.outfitType ? [preferences.outfitType] : []),
+      footwear: Array.isArray(preferences.footwear) ? preferences.footwear : (preferences.footwear ? [preferences.footwear] : []),
+      accessories: Array.isArray(preferences.accessories) ? preferences.accessories : (preferences.accessories ? [preferences.accessories] : []),
+      jewellery: Array.isArray(preferences.jewellery) ? preferences.jewellery : (preferences.jewellery ? [preferences.jewellery] : []),
+      comfort: Array.isArray(preferences.comfort) ? preferences.comfort : (preferences.comfort ? [preferences.comfort] : []),
+      season: Array.isArray(preferences.season) ? preferences.season : (preferences.season ? [preferences.season] : []),
+      weather: Array.isArray(preferences.weather) ? preferences.weather : (preferences.weather ? [preferences.weather] : []),
+      preferredFit: Array.isArray(preferences.preferredFit) ? preferences.preferredFit : (preferences.fit ? [preferences.fit] : []),
+      avoidedStyles: Array.isArray(preferences.avoidedStyles) ? preferences.avoidedStyles : [],
+      avoidedColors: Array.isArray(preferences.avoidedColors) ? preferences.avoidedColors : []
     },
+    recentlyShown: Array.isArray(recentlyShown) ? recentlyShown : [],
     count,
-    seedOffset,
-    recentlyShown
+    seedOffset
   };
 
   try {
-    const response = await fetch(`${API_BASE_URL}/recommendations`, {
+    const response = await fetch(`${API_BASE_URL}/api/recommendations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -69,10 +64,11 @@ export async function fetchRecommendations(preferences = {}, count = 3, seedOffs
  */
 export async function checkBackendHealth() {
   try {
-    const response = await fetch(`${API_BASE_URL}/health`);
+    const response = await fetch(`${API_BASE_URL}/api/health`);
     if (!response.ok) return { status: 'offline' };
     return await response.json();
   } catch (error) {
     return { status: 'offline', error: error.message };
   }
 }
+

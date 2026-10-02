@@ -1,18 +1,11 @@
-"""Data models package."""
-from app.models.preferences import (
-    PreferencesInput,
-    RecommendationRequest,
-    OutfitItem,
-    RecommendationResponse,
-)
+"""Chic Genie Models Package."""
 
-# Alias for backwards compatibility
-UserPreferences = PreferencesInput
+from app.models.preferences import PreferencesInput, RecommendationRequest
+from app.models.outfit import Outfit, RecommendationResponse
 
 __all__ = [
     "PreferencesInput",
     "RecommendationRequest",
-    "OutfitItem",
+    "Outfit",
     "RecommendationResponse",
-    "UserPreferences",
 ]
