@@ -1,0 +1,50 @@
+{
+  "model_type": "RandomForestRegressor",
+  "n_estimators": 100,
+  "max_depth": 10,
+  "features": [
+    "rag_similarity",
+    "style_match",
+    "occasion_match",
+    "color_match",
+    "body_shape_compatibility",
+    "outfit_type_match",
+    "footwear_match",
+    "accessory_match",
+    "weather_season_match",
+    "fit_comfort_match",
+    "novelty_score",
+    "palette_match",
+    "formality_match",
+    "avoid_penalty_flag"
+  ],
+  "num_features": 14,
+  "total_samples": 4180,
+  "train_samples": 3344,
+  "test_samples": 836,
+  "metrics": {
+    "mae": 0.0136,
+    "mse": 0.0003,
+    "rmse": 0.0184,
+    "r2_score": 0.9814
+  },
+  "feature_importances": {
+    "rag_similarity": 0.8396,
+    "style_match": 0.0026,
+    "occasion_match": 0.0022,
+    "color_match": 0.0272,
+    "body_shape_compatibility": 0.011,
+    "outfit_type_match": 0.0042,
+    "footwear_match": 0.0001,
+    "accessory_match": 0.0,
+    "weather_season_match": 0.0003,
+    "fit_comfort_match": 0.0013,
+    "novelty_score": 0.0014,
+    "palette_match": 0.0001,
+    "formality_match": 0.0002,
+    "avoid_penalty_flag": 0.1098
+  },
+  "target_definition": "Weakly-supervised domain compatibility target Ground Truth blending RAG similarity (0.35), style match (0.18), occasion match (0.15), body silhouette harmony (0.12), color match (0.08), garment type (0.06), fit (0.04), novelty (0.02), styling synergy bonus (+0.04), avoid penalty (-0.40), and Gaussian noise (sigma=0.015).",
+  "trained_at": "2026-10-07T18:57:50.889875",
+  "random_seed": 42
+}

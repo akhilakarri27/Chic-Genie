@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.health import router as health_router
 from app.api.recommendations import router as recommendations_router
+from app.api.rag import router as rag_router
 from app.core.config import settings
 
 app = FastAPI(
@@ -28,6 +29,7 @@ app.add_middleware(
 # Register API Routers
 app.include_router(health_router, prefix=settings.API_V1_STR)
 app.include_router(recommendations_router, prefix=settings.API_V1_STR)
+app.include_router(rag_router, prefix=settings.API_V1_STR)
 
 
 @app.get("/")

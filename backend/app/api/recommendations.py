@@ -26,7 +26,7 @@ async def generate_recommendations(request: RecommendationRequest) -> Recommenda
     - Returns complete styled ensembles (Garments + Footwear + Jewellery + Bag + Accessories)
     """
     try:
-        recommendations = engine.get_recommendations(
+        recommendations = await engine.get_recommendations_async(
             prefs=request.preferences,
             recently_shown=request.recentlyShown,
             count=request.count,
