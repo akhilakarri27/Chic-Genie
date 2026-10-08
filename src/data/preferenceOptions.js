@@ -81,6 +81,53 @@ export const WEATHERS = [
   { id: 'rainy', label: 'Rainy', icon: '🌧️', temp: 'Monsoon · Practical & Chic', desc: 'Weather-ready fabrics & chic ankle boots' }
 ];
 
+export const OUTFIT_CATEGORIES = [
+  {
+    id: 'traditional',
+    label: 'Traditional',
+    icon: '🥻',
+    desc: 'Ethnic couture, regal lehengas, shararas & artisanal drapes',
+    items: [
+      { id: 'lehenga_choli', label: 'Lehenga Choli', icon: '🥻', desc: 'Voluminous flared skirt with ornate choli', category: 'ETHNIC' },
+      { id: 'sharara', label: 'Sharara', icon: '🪷', desc: 'Flared tiered pants with short kurti ensemble', category: 'ETHNIC' },
+      { id: 'long_dress', label: 'Long Dress', icon: '✨', desc: 'Floor-sweeping regal Anarkali & ethnic gown', category: 'ETHNIC' },
+      { id: 'saree', label: 'Saree', icon: '🥻', desc: 'Organza, Banarasi, or silk drapes', category: 'ETHNIC' }
+    ]
+  },
+  {
+    id: 'western',
+    label: 'Western',
+    icon: '✨',
+    desc: 'Modern chic, tailored jumpsuits & elevated matching sets',
+    items: [
+      { id: 'jumpsuit', label: 'Jumpsuit', icon: '🧥', desc: 'One-piece tailored chic statement', category: 'WESTERN' },
+      { id: 'co_ords', label: 'Co-ords', icon: '✨', desc: 'Tailored matching two-piece coordinate', category: 'WESTERN' },
+      { id: 'coord_set', label: 'Co-ord Set', icon: '👚', desc: 'Monochromatic matching set ensemble', category: 'WESTERN' }
+    ]
+  },
+  {
+    id: 'streetwear',
+    label: 'Streetwear',
+    icon: '🛹',
+    desc: 'Oversized silhouettes, layered streetwear & utility cargo',
+    items: [
+      { id: 'oversized_hoodie_pants', label: 'Oversized Hoodie + Pants', icon: '🧥', desc: 'Urban utility fit with oversized fleece & pants', category: 'STREETWEAR' },
+      { id: 'graphic_layered', label: 'Graphic Layered', icon: '🛹', desc: 'Layered graphic tee, flannel, & relaxed bottom', category: 'STREETWEAR' },
+      { id: 'cargo_sweatshirt', label: 'Cargo + Sweatshirt', icon: '🔥', desc: 'Boxy sweatshirt with multi-pocket utility cargo', category: 'STREETWEAR' }
+    ]
+  },
+  {
+    id: 'professional',
+    label: 'Professional',
+    icon: '💼',
+    desc: 'Sharp power tailoring, blazer suits & sleek workwear trousers',
+    items: [
+      { id: 'blazer_outfit', label: 'Blazer Outfit', icon: '💼', desc: 'Full tailored blazer with structured trousers', category: 'BUSINESS' },
+      { id: 'blouse_pencil_pant', label: 'Blouse + Pencil-Cut Pant', icon: '👔', desc: 'Crisp blouse with tailored pencil-cut trousers', category: 'BUSINESS' }
+    ]
+  }
+];
+
 export const OUTFIT_TYPES = [
   // Definitive Taxonomy - Traditional
   { id: 'lehenga_choli', label: 'Lehenga Choli', icon: '🥻', desc: 'Voluminous flared skirt with ornate choli', category: 'ETHNIC' },

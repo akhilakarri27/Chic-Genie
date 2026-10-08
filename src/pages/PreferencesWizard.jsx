@@ -4,7 +4,8 @@ import {
   OCCASIONS, 
   STYLES, 
   WEATHERS, 
-  OUTFIT_TYPES, 
+  OUTFIT_TYPES,
+  OUTFIT_CATEGORIES,
   COLOR_SWATCHES, 
   COLOR_FAMILIES,
   PALETTE_PREFERENCES, 
@@ -16,7 +17,8 @@ import {
 } from '../data/preferenceOptions';
 import { 
   ChevronLeft, 
-  ChevronRight, 
+  ChevronRight,
+  ChevronDown,
   Sparkles, 
   Check, 
   Edit3, 
@@ -59,6 +61,11 @@ export default function PreferencesWizard() {
   }, [isLoading]);
 
   const [activeColorFamily, setActiveColorFamily] = useState('all');
+  const [expandedCategory, setExpandedCategory] = useState(null);
+
+  const toggleCategory = (catId) => {
+    setExpandedCategory(prev => prev === catId ? null : catId);
+  };
 
   // Helper for multi-select toggle
   const toggleMultiSelect = (field, itemId) => {
@@ -475,36 +482,119 @@ export default function PreferencesWizard() {
           </div>
         )}
 
-        {/* STEP 4: OUTFIT TYPE */}
+        {/* STEP 4: OUTFIT TYPE (Grouped by Category) */}
         {currentStep === 4 && (
           <div>
             <div className="step-heading-group">
               <h2 className="step-title font-serif">What do you feel like wearing?</h2>
-              <p className="step-desc">Select one or more preferred outfit silhouette formats.</p>
+              <p className="step-desc">Choose an outfit category, then select your preferred silhouette formats.</p>
             </div>
-            <div className="cards-grid">
-              {OUTFIT_TYPES.map((ot) => {
+
+            {/* Parent Category Cards Grid */}
+            <div className="outfit-categories-grid">
+              {OUTFIT_CATEGORIES.map((cat) => {
                 const currentSelectedTypes = preferences.outfitTypes && preferences.outfitTypes.length > 0
                   ? preferences.outfitTypes
                   : (preferences.outfitType ? [preferences.outfitType] : []);
-                const isSelected = currentSelectedTypes.includes(ot.id);
+                const selectedCount = cat.items.filter(item => currentSelectedTypes.includes(item.id)).length;
+                const isExpanded = expandedCategory === cat.id;
+
                 return (
                   <div
-                    key={ot.id}
-                    id={`outfit-type-${ot.id}`}
-                    className={`select-card ${isSelected ? 'selected' : ''}`}
-                    onClick={() => toggleMultiSelect('outfitTypes', ot.id)}
+                    key={cat.id}
+                    id={`outfit-category-${cat.id}`}
+                    className={`category-parent-card ${isExpanded ? 'expanded' : ''} ${selectedCount > 0 ? 'has-selection' : ''}`}
+                    onClick={() => toggleCategory(cat.id)}
                     role="button"
                     tabIndex={0}
-                    aria-pressed={isSelected}
+                    aria-expanded={isExpanded}
                   >
-                    <span className="select-card-icon">{ot.icon}</span>
-                    <span className="select-card-title">{ot.label}</span>
-                    <span className="select-card-desc">{ot.desc}</span>
+                    <div className="category-parent-header">
+                      <div className="category-parent-title-group">
+                        <span className="category-parent-icon">{cat.icon}</span>
+                        <div>
+                          <h3 className="category-parent-title">{cat.label}</h3>
+                          <span className="category-parent-count-hint">{cat.items.length} options</span>
+                        </div>
+                      </div>
+                      <div className="category-parent-action">
+                        {selectedCount > 0 && (
+                          <span className="category-selected-badge">
+                            <Check size={13} />
+                            <span>{selectedCount} selected</span>
+                          </span>
+                        )}
+                        <span className={`category-expand-indicator ${isExpanded ? 'rotated' : ''}`}>
+                          <ChevronDown size={18} />
+                        </span>
+                      </div>
+                    </div>
+                    <p className="category-parent-desc">{cat.desc}</p>
                   </div>
                 );
               })}
             </div>
+
+            {/* Active Category Expanded Child Options Panel */}
+            {expandedCategory && (() => {
+              const activeCat = OUTFIT_CATEGORIES.find(c => c.id === expandedCategory);
+              if (!activeCat) return null;
+
+              const currentSelectedTypes = preferences.outfitTypes && preferences.outfitTypes.length > 0
+                ? preferences.outfitTypes
+                : (preferences.outfitType ? [preferences.outfitType] : []);
+
+              return (
+                <div className="category-child-panel animate-fade-in" id={`child-panel-${activeCat.id}`}>
+                  <div className="child-panel-header">
+                    <div className="child-panel-title-wrap">
+                      <span className="child-panel-icon">{activeCat.icon}</span>
+                      <div>
+                        <h4 className="child-panel-title font-serif">{activeCat.label} Silhouettes</h4>
+                        <p className="child-panel-subtitle">Select one or more specific {activeCat.label.toLowerCase()} cuts:</p>
+                      </div>
+                    </div>
+                    <button 
+                      type="button"
+                      className="child-panel-close-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedCategory(null);
+                      }}
+                    >
+                      Collapse
+                    </button>
+                  </div>
+
+                  <div className="cards-grid">
+                    {activeCat.items.map((ot) => {
+                      const isSelected = currentSelectedTypes.includes(ot.id);
+                      return (
+                        <div
+                          key={ot.id}
+                          id={`outfit-type-${ot.id}`}
+                          className={`select-card ${isSelected ? 'selected' : ''}`}
+                          onClick={() => toggleMultiSelect('outfitTypes', ot.id)}
+                          role="button"
+                          tabIndex={0}
+                          aria-pressed={isSelected}
+                        >
+                          <span className="select-card-icon">{ot.icon}</span>
+                          <span className="select-card-title">{ot.label}</span>
+                          <span className="select-card-desc">{ot.desc}</span>
+                          {isSelected && (
+                            <span className="select-card-check">
+                              <Check size={14} />
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+
           </div>
         )}
 
