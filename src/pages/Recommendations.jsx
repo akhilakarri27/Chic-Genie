@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import OutfitCard from '../components/OutfitCard';
+import { OCCASIONS, STYLES } from '../data/preferenceOptions';
 import { 
   Sparkles, 
   RotateCcw, 
@@ -19,6 +20,32 @@ export default function Recommendations() {
     savedLooks 
   } = useApp();
 
+  const getOccasionDisplay = () => {
+    if (preferences.occasion && preferences.occasion !== 'other') {
+      const match = OCCASIONS.find(o => o.id === preferences.occasion);
+      if (match) return match.label;
+      return preferences.occasion.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    }
+    if (preferences.styles && preferences.styles.length > 0) {
+      const firstStyle = preferences.styles[0];
+      const match = STYLES.find(s => s.id === firstStyle);
+      if (match) return `${match.label} Vibe`;
+      return `${firstStyle.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Vibe`;
+    }
+    return 'Everyday Curation';
+  };
+
+  const getSilhouetteDisplay = () => {
+    if (!preferences.bodyShape) return 'Your Silhouette';
+    return `${preferences.bodyShape.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Silhouette`;
+  };
+
+  const getComfortDisplay = () => {
+    if (!preferences.comfort) return 'Balanced Comfort';
+    const c = Array.isArray(preferences.comfort) ? preferences.comfort[0] : preferences.comfort;
+    return c.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  };
+
   return (
     <div className="recommendations-page-container animate-fade-in" id="recommendations-page">
       {/* Editorial Header */}
@@ -32,7 +59,7 @@ export default function Recommendations() {
             Looks Picked for You.
           </h1>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '1.05rem', lineHeight: '1.5' }}>
-            Curated by Chic Genie for <strong style={{ color: 'var(--color-primary)', textTransform: 'capitalize' }}>{preferences.bodyShape ? `${preferences.bodyShape.replace('_', ' ')} Silhouette` : 'Your Silhouette'}</strong> · <strong style={{ color: 'var(--color-primary)' }}>{preferences.occasion || 'Everyday'}</strong> · <span style={{ textTransform: 'capitalize' }}>{preferences.comfort ? preferences.comfort.replace('_', ' ') : 'Balanced'}</span>.
+            Curated by Chic Genie for <strong style={{ color: 'var(--color-primary)' }}>{getSilhouetteDisplay()}</strong> · <strong style={{ color: 'var(--color-primary)' }}>{getOccasionDisplay()}</strong> · <span>{getComfortDisplay()}</span>.
           </p>
         </div>
 

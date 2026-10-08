@@ -1,0 +1,126 @@
+{
+  "model_type": "RandomForestRegressor",
+  "model_path": "C:\\Users\\sridh\\OneDrive\\Chic Genei\\backend\\app\\ml\\model\\outfit_compatibility_rf.joblib",
+  "total_features": 14,
+  "sum_of_importances": 1.0,
+  "is_normalized_to_one": true,
+  "top_5_features": [
+    {
+      "rank": 1,
+      "feature": "rag_similarity",
+      "importance": 0.7196,
+      "percentage": "71.96%"
+    },
+    {
+      "rank": 2,
+      "feature": "avoid_penalty_flag",
+      "importance": 0.2122,
+      "percentage": "21.22%"
+    },
+    {
+      "rank": 3,
+      "feature": "color_match",
+      "importance": 0.0297,
+      "percentage": "2.97%"
+    },
+    {
+      "rank": 4,
+      "feature": "style_match",
+      "importance": 0.0179,
+      "percentage": "1.79%"
+    },
+    {
+      "rank": 5,
+      "feature": "body_shape_compatibility",
+      "importance": 0.0125,
+      "percentage": "1.25%"
+    }
+  ],
+  "all_feature_importances_ranked": [
+    {
+      "rank": 1,
+      "feature": "rag_similarity",
+      "importance": 0.7196,
+      "percentage": "71.96%"
+    },
+    {
+      "rank": 2,
+      "feature": "avoid_penalty_flag",
+      "importance": 0.2122,
+      "percentage": "21.22%"
+    },
+    {
+      "rank": 3,
+      "feature": "color_match",
+      "importance": 0.0297,
+      "percentage": "2.97%"
+    },
+    {
+      "rank": 4,
+      "feature": "style_match",
+      "importance": 0.0179,
+      "percentage": "1.79%"
+    },
+    {
+      "rank": 5,
+      "feature": "body_shape_compatibility",
+      "importance": 0.0125,
+      "percentage": "1.25%"
+    },
+    {
+      "rank": 6,
+      "feature": "outfit_type_match",
+      "importance": 0.0039,
+      "percentage": "0.39%"
+    },
+    {
+      "rank": 7,
+      "feature": "occasion_match",
+      "importance": 0.0016,
+      "percentage": "0.16%"
+    },
+    {
+      "rank": 8,
+      "feature": "fit_comfort_match",
+      "importance": 0.0011,
+      "percentage": "0.11%"
+    },
+    {
+      "rank": 9,
+      "feature": "novelty_score",
+      "importance": 0.001,
+      "percentage": "0.1%"
+    },
+    {
+      "rank": 10,
+      "feature": "weather_season_match",
+      "importance": 0.0003,
+      "percentage": "0.03%"
+    },
+    {
+      "rank": 11,
+      "feature": "formality_match",
+      "importance": 0.0001,
+      "percentage": "0.01%"
+    },
+    {
+      "rank": 12,
+      "feature": "footwear_match",
+      "importance": 0.0001,
+      "percentage": "0.01%"
+    },
+    {
+      "rank": 13,
+      "feature": "palette_match",
+      "importance": 0.0,
+      "percentage": "0.0%"
+    },
+    {
+      "rank": 14,
+      "feature": "accessory_match",
+      "importance": 0.0,
+      "percentage": "0.0%"
+    }
+  ],
+  "model_modified": false
+}

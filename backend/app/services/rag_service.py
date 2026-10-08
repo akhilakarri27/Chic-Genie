@@ -6,7 +6,7 @@ and logs comprehensive retrieval diagnostics.
 """
 
 import logging
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, Set
 
 from app.models.preferences import PreferencesInput
 from app.services.embedding_service import embedding_service, EmbeddingService
@@ -32,6 +32,9 @@ def _to_list(value: Any) -> List[str]:
                 items.append(str(v).strip())
         return items
     return [str(value).strip()]
+
+
+from app.services.taxonomy import taxonomy_engine
 
 
 class FashionRAGService:
@@ -166,10 +169,13 @@ class FashionRAGService:
         self,
         prefs: Union[PreferencesInput, Dict[str, Any]],
         top_k: int = 5,
-        recently_shown: Optional[List[str]] = None
+        recently_shown: Optional[List[str]] = None,
+        target_category: Optional[str] = None,
+        allowed_outfit_types: Optional[Set[str]] = None
     ) -> List[Dict[str, Any]]:
         """
         Retrieves top relevant fashion recommendations using dense semantic vector search.
+        Applies hard exact outfitType constraint (priority) and category constraint (secondary).
         
         Returns:
             List of dictionaries containing:
@@ -184,11 +190,19 @@ class FashionRAGService:
         """
         recently_shown = recently_shown or []
 
+        # Resolve constraints if not provided
+        if allowed_outfit_types is None:
+            allowed_outfit_types = taxonomy_engine.resolve_allowed_outfit_types(prefs)
+        if target_category is None:
+            target_category = taxonomy_engine.determine_target_category(prefs)
+
         # 1. Synthesize natural-language query
         user_query = self.build_user_query(prefs)
         logger.info("=" * 60)
         logger.info("Chic Genie RAG Retrieval Request:")
         logger.info("Generated Semantic Query: \"%s\"", user_query)
+        logger.info("Allowed Outfit Types Constraint: %s", allowed_outfit_types or "None (All Types)")
+        logger.info("Target Category Constraint: %s", target_category or "None (Full Catalog)")
         logger.info("Embedding Model: %s (Dim: %d)", self.embedder.model_name, self.embedder.dimension)
 
         # 2. Ensure knowledge base is indexed
@@ -199,19 +213,36 @@ class FashionRAGService:
         # 3. Compute query embedding vector
         query_vector = self.embedder.embed_query(user_query)
 
-        # 4. Fetch semantic vector search candidates from ChromaDB
-        # Over-fetch if recently_shown is present to accommodate filtering
-        fetch_k = top_k + len(recently_shown) if recently_shown else top_k
+        # 4. Filter catalog candidates using exact constraint engine FIRST
+        catalog = load_fashion_catalog()
+        eligible_items = taxonomy_engine.filter_catalog(
+            catalog,
+            target_category=target_category,
+            allowed_outfit_types=allowed_outfit_types
+        )
+        eligible_ids: Set[str] = {str(item.get("id")) for item in eligible_items if item.get("id")}
+        
+        logger.info(
+            "RAG Pre-filtering: Filtered from %d total catalog items to %d eligible candidates (Allowed Types: %s)",
+            len(catalog), len(eligible_ids), allowed_outfit_types
+        )
+
+        # 5. Fetch semantic vector search candidates from ChromaDB over eligible items
+        doc_count = self.vector_store.count_documents()
+        fetch_k = max(doc_count, top_k + len(recently_shown))
         raw_results = self.vector_store.query_similar(query_embedding=query_vector, top_k=fetch_k)
 
-        # 5. Enrich candidates with full catalog details
+        # 6. Enrich candidates and enforce strict membership in eligible_ids
         results: List[Dict[str, Any]] = []
         for r in raw_results:
-            outfit_id = r["id"]
+            outfit_id = str(r["id"])
+            if outfit_id not in eligible_ids:
+                continue
             if recently_shown and outfit_id in recently_shown:
                 continue
 
             catalog_item = self._catalog_map.get(outfit_id, {})
+
             results.append({
                 "id": outfit_id,
                 "name": r["metadata"].get("name") or catalog_item.get("name", ""),
@@ -230,17 +261,44 @@ class FashionRAGService:
             if len(results) >= top_k:
                 break
 
+        # If recently_shown excluded too many, allow unshown eligible candidates
+        if len(results) < min(len(eligible_ids), top_k):
+            for r in raw_results:
+                outfit_id = str(r["id"])
+                if outfit_id in eligible_ids and not any(res["id"] == outfit_id for res in results):
+                    catalog_item = self._catalog_map.get(outfit_id, {})
+                    results.append({
+                        "id": outfit_id,
+                        "name": r["metadata"].get("name") or catalog_item.get("name", ""),
+                        "category": r["metadata"].get("category") or catalog_item.get("category", ""),
+                        "outfitType": r["metadata"].get("outfitType") or catalog_item.get("outfitType", ""),
+                        "style": r["metadata"].get("style") or catalog_item.get("style", ""),
+                        "color": r["metadata"].get("color") or catalog_item.get("color", ""),
+                        "similarity_score": r["similarity_score"],
+                        "distance": r["distance"],
+                        "metadata": r["metadata"],
+                        "raw_catalog_item": catalog_item,
+                        "document_snippet": r["document"][:200] + "...",
+                        "generated_query": user_query
+                    })
+                    if len(results) >= top_k:
+                        break
+
         # 6. Detailed diagnostic logging
-        logger.info("RAG Retrieval Summary: Returned %d matches (requested top_k=%d):", len(results), top_k)
+        logger.info(
+            "RAG Retrieval Summary: Returned %d matches (requested top_k=%d, allowed_types=%s, category=%s):",
+            len(results), top_k, allowed_outfit_types, target_category
+        )
         for rank, res in enumerate(results, start=1):
             logger.info(
-                "  [%d] ID: %s | Match: %.2f%% (Dist: %.4f) | %s | %s",
+                "  [%d] ID: %s | Match: %.2f%% (Dist: %.4f) | %s | %s | %s",
                 rank,
                 res["id"],
                 res["similarity_score"] * 100.0,
                 res["distance"],
                 res["name"],
-                res["category"]
+                res["category"],
+                res["outfitType"]
             )
         logger.info("=" * 60)
 

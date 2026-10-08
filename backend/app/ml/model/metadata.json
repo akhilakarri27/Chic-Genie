@@ -19,32 +19,32 @@
     "avoid_penalty_flag"
   ],
   "num_features": 14,
-  "total_samples": 4180,
-  "train_samples": 3344,
-  "test_samples": 836,
+  "total_samples": 8580,
+  "train_samples": 6864,
+  "test_samples": 1716,
   "metrics": {
-    "mae": 0.0136,
+    "mae": 0.013,
     "mse": 0.0003,
-    "rmse": 0.0184,
-    "r2_score": 0.9814
+    "rmse": 0.0165,
+    "r2_score": 0.9866
   },
   "feature_importances": {
-    "rag_similarity": 0.8396,
-    "style_match": 0.0026,
-    "occasion_match": 0.0022,
-    "color_match": 0.0272,
-    "body_shape_compatibility": 0.011,
-    "outfit_type_match": 0.0042,
+    "rag_similarity": 0.7196,
+    "style_match": 0.0179,
+    "occasion_match": 0.0016,
+    "color_match": 0.0297,
+    "body_shape_compatibility": 0.0125,
+    "outfit_type_match": 0.0039,
     "footwear_match": 0.0001,
     "accessory_match": 0.0,
     "weather_season_match": 0.0003,
-    "fit_comfort_match": 0.0013,
-    "novelty_score": 0.0014,
-    "palette_match": 0.0001,
-    "formality_match": 0.0002,
-    "avoid_penalty_flag": 0.1098
+    "fit_comfort_match": 0.0011,
+    "novelty_score": 0.001,
+    "palette_match": 0.0,
+    "formality_match": 0.0001,
+    "avoid_penalty_flag": 0.2122
   },
   "target_definition": "Weakly-supervised domain compatibility target Ground Truth blending RAG similarity (0.35), style match (0.18), occasion match (0.15), body silhouette harmony (0.12), color match (0.08), garment type (0.06), fit (0.04), novelty (0.02), styling synergy bonus (+0.04), avoid penalty (-0.40), and Gaussian noise (sigma=0.015).",
-  "trained_at": "2026-10-07T18:57:50.889875",
+  "trained_at": "2026-10-07T21:44:54.511530",
   "random_seed": 42
 }

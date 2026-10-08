@@ -50,16 +50,10 @@ export default function PreferencesWizard() {
           }
           return prev;
         });
-      }, 700);
-
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-        generateRecommendationsFromPreferences(preferences);
-      }, 2900);
+      }, 600);
 
       return () => {
         clearInterval(interval);
-        clearTimeout(timer);
       };
     }
   }, [isLoading]);
@@ -89,6 +83,17 @@ export default function PreferencesWizard() {
         const exists = filtered.includes(itemId);
         const updated = exists ? filtered.filter(id => id !== itemId) : [...filtered, itemId];
         return { ...prev, avoid: updated.length === 0 ? ['nothing_to_avoid'] : updated };
+      }
+
+      if (field === 'outfitTypes') {
+        const exists = currentList.includes(itemId);
+        const updated = exists ? currentList.filter(id => id !== itemId) : [...currentList, itemId];
+        const primary = updated.length > 0 ? updated[0] : '';
+        return { 
+          ...prev, 
+          outfitTypes: updated,
+          outfitType: primary
+        };
       }
 
       const exists = currentList.includes(itemId);
@@ -128,9 +133,16 @@ export default function PreferencesWizard() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleFinalGenerate = () => {
+  const handleFinalGenerate = async () => {
     setIsLoading(true);
     setLoadingPhaseIndex(0);
+    try {
+      await generateRecommendationsFromPreferences(preferences);
+    } catch (err) {
+      console.error('[PreferencesWizard] Generation error:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Loading Screen Render
@@ -235,8 +247,14 @@ export default function PreferencesWizard() {
               <span>04. Outfit Type</span>
               <button className="summary-edit-btn" onClick={() => handleJumpToStep(4)}>Edit</button>
             </div>
-            <div className="summary-card-value">
-              {outfitTypeObj ? `${outfitTypeObj.icon} ${outfitTypeObj.label}` : 'Jeans + Top'}
+            <div className="summary-card-value" style={{ fontSize: '0.92rem' }}>
+              {(preferences.outfitTypes && preferences.outfitTypes.length > 0 
+                ? preferences.outfitTypes 
+                : (preferences.outfitType ? [preferences.outfitType] : [])
+              ).map(t => {
+                const found = OUTFIT_TYPES.find(item => item.id === t);
+                return found ? `${found.icon} ${found.label}` : t;
+              }).join(' · ') || '✨ Any Silhouette'}
             </div>
           </div>
 
@@ -462,17 +480,20 @@ export default function PreferencesWizard() {
           <div>
             <div className="step-heading-group">
               <h2 className="step-title font-serif">What do you feel like wearing?</h2>
-              <p className="step-desc">Select your preferred outfit silhouette format.</p>
+              <p className="step-desc">Select one or more preferred outfit silhouette formats.</p>
             </div>
             <div className="cards-grid">
               {OUTFIT_TYPES.map((ot) => {
-                const isSelected = preferences.outfitType === ot.id;
+                const currentSelectedTypes = preferences.outfitTypes && preferences.outfitTypes.length > 0
+                  ? preferences.outfitTypes
+                  : (preferences.outfitType ? [preferences.outfitType] : []);
+                const isSelected = currentSelectedTypes.includes(ot.id);
                 return (
                   <div
                     key={ot.id}
                     id={`outfit-type-${ot.id}`}
                     className={`select-card ${isSelected ? 'selected' : ''}`}
-                    onClick={() => setSingleSelect('outfitType', ot.id)}
+                    onClick={() => toggleMultiSelect('outfitTypes', ot.id)}
                     role="button"
                     tabIndex={0}
                     aria-pressed={isSelected}

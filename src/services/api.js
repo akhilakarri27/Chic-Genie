@@ -3,7 +3,7 @@
  * Handles seamless communication with the FastAPI backend.
  */
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
 
 /**
  * Fetch personalized styling recommendations from FastAPI backend
@@ -15,14 +15,22 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:800
  * @returns {Promise<Array<Object>>} - Array of complete outfit recommendations
  */
 export async function fetchRecommendations(preferences = {}, count = 3, seedOffset = 0, recentlyShown = []) {
+  const finalOutfitTypes = Array.isArray(preferences.outfitTypes) && preferences.outfitTypes.length > 0 
+    ? preferences.outfitTypes 
+    : (preferences.outfitType ? [preferences.outfitType] : []);
+  const finalOutfitType = preferences.outfitType || (finalOutfitTypes.length > 0 ? finalOutfitTypes[0] : '');
+
   const payload = {
     preferences: {
       bodyShape: preferences.bodyShape || '',
       styles: Array.isArray(preferences.styles) ? preferences.styles : (preferences.styles ? [preferences.styles] : []),
       occasions: Array.isArray(preferences.occasions) ? preferences.occasions : (preferences.occasion ? [preferences.occasion] : []),
+      occasion: preferences.occasion || '',
       colors: Array.isArray(preferences.colors) ? preferences.colors : (preferences.colors ? [preferences.colors] : []),
       colorMoods: Array.isArray(preferences.colorMoods) ? preferences.colorMoods : (preferences.palette ? [preferences.palette] : []),
-      outfitTypes: Array.isArray(preferences.outfitTypes) ? preferences.outfitTypes : (preferences.outfitType ? [preferences.outfitType] : []),
+      palette: preferences.palette || '',
+      outfitTypes: finalOutfitTypes,
+      outfitType: finalOutfitType,
       footwear: Array.isArray(preferences.footwear) ? preferences.footwear : (preferences.footwear ? [preferences.footwear] : []),
       accessories: Array.isArray(preferences.accessories) ? preferences.accessories : (preferences.accessories ? [preferences.accessories] : []),
       jewellery: Array.isArray(preferences.jewellery) ? preferences.jewellery : (preferences.jewellery ? [preferences.jewellery] : []),
@@ -30,13 +38,21 @@ export async function fetchRecommendations(preferences = {}, count = 3, seedOffs
       season: Array.isArray(preferences.season) ? preferences.season : (preferences.season ? [preferences.season] : []),
       weather: Array.isArray(preferences.weather) ? preferences.weather : (preferences.weather ? [preferences.weather] : []),
       preferredFit: Array.isArray(preferences.preferredFit) ? preferences.preferredFit : (preferences.fit ? [preferences.fit] : []),
-      avoidedStyles: Array.isArray(preferences.avoidedStyles) ? preferences.avoidedStyles : [],
-      avoidedColors: Array.isArray(preferences.avoidedColors) ? preferences.avoidedColors : []
+      fit: preferences.fit || '',
+      avoidedStyles: Array.isArray(preferences.avoidedStyles) ? preferences.avoidedStyles : (preferences.avoid ? preferences.avoid.filter(a => a !== 'nothing_to_avoid') : []),
+      avoidedColors: Array.isArray(preferences.avoidedColors) ? preferences.avoidedColors : [],
+      avoid: Array.isArray(preferences.avoid) ? preferences.avoid : []
     },
     recentlyShown: Array.isArray(recentlyShown) ? recentlyShown : [],
     count,
     seedOffset
   };
+
+  console.log('--- [API fetchRecommendations] ---');
+  console.log('1. FRONTEND SELECTED VALUES:', preferences);
+  console.log('2. FINAL preferences.outfitTypes:', finalOutfitTypes);
+  console.log('3. FINAL preferences.outfitType:', finalOutfitType);
+  console.log('4. POST /api/recommendations request payload:', JSON.stringify(payload, null, 2));
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/recommendations`, {

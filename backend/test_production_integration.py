@@ -44,7 +44,7 @@ def test_production_scenarios():
 
     scenarios = [
         {
-            "name": "Scenario 1: Romantic Evening Dinner",
+            "name": "Scenario 1: Romantic Evening Dinner (Western)",
             "payload": {
                 "preferences": {
                     "bodyShape": "hourglass",
@@ -52,7 +52,7 @@ def test_production_scenarios():
                     "occasions": ["dinner", "date"],
                     "colors": ["burgundy", "gold"],
                     "palette": "rich jewel",
-                    "outfitTypes": ["wrap dress", "midi dress"],
+                    "outfitTypes": ["jumpsuit", "co_ords", "coord_set"],
                     "footwear": ["block heels"],
                     "jewellery": ["minimal gold"],
                     "weather": ["mild", "breezy"],
@@ -63,7 +63,7 @@ def test_production_scenarios():
             }
         },
         {
-            "name": "Scenario 2: Festive Traditional Celebration",
+            "name": "Scenario 2: Festive Traditional Celebration (Traditional)",
             "payload": {
                 "preferences": {
                     "bodyShape": "pear",
@@ -71,7 +71,7 @@ def test_production_scenarios():
                     "occasions": ["wedding", "festive", "party"],
                     "colors": ["emerald", "gold", "ruby"],
                     "palette": "rich jewel",
-                    "outfitTypes": ["saree", "lehenga"],
+                    "outfitTypes": ["lehenga_choli", "sharara", "long_dress"],
                     "footwear": ["embellished juttis"],
                     "jewellery": ["kundan earrings", "gold temple jewellery"],
                     "season": "Autumn/Winter"
@@ -81,7 +81,7 @@ def test_production_scenarios():
             }
         },
         {
-            "name": "Scenario 3: Smart Casual Workwear & Office Blazer",
+            "name": "Scenario 3: Smart Casual Workwear & Office Blazer (Professional)",
             "payload": {
                 "preferences": {
                     "bodyShape": "rectangle",
@@ -89,7 +89,7 @@ def test_production_scenarios():
                     "occasions": ["work", "office", "presentation"],
                     "colors": ["charcoal", "white", "black", "navy"],
                     "palette": "monochrome",
-                    "outfitTypes": ["blazer", "trousers"],
+                    "outfitTypes": ["blazer_outfit", "blouse_pencil_pant"],
                     "footwear": ["loafers", "pointed flats"],
                     "fit": "tailored",
                     "comfort": "balanced"
@@ -99,7 +99,7 @@ def test_production_scenarios():
             }
         },
         {
-            "name": "Scenario 4: Relaxed Streetwear & Sneaker Style",
+            "name": "Scenario 4: Relaxed Streetwear & Sneaker Style (Streetwear)",
             "payload": {
                 "preferences": {
                     "bodyShape": "inverted_triangle",
@@ -107,7 +107,7 @@ def test_production_scenarios():
                     "occasions": ["casual", "hangout", "college"],
                     "colors": ["olive", "black", "white"],
                     "palette": "earthy",
-                    "outfitTypes": ["cargo", "oversized tee", "jacket"],
+                    "outfitTypes": ["oversized_hoodie_pants", "graphic_layered", "cargo_sweatshirt"],
                     "footwear": ["sneakers", "chunky trainers"],
                     "fit": "oversized",
                     "comfort": "comfort_first"

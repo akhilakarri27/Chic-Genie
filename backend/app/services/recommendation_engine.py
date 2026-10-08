@@ -5,7 +5,7 @@ and Multi-Factor Hybrid Reranking with graceful fallback to heuristic scoring.
 """
 
 import logging
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional, Union, Set
 from app.core.config import settings
 from app.data import load_fashion_catalog
 from app.models.preferences import PreferencesInput
@@ -211,6 +211,7 @@ class RecommendationEngine:
         """
         from app.services.rag_service import rag_service
         from app.services.hybrid_reranker import hybrid_reranker
+        from app.services.taxonomy import taxonomy_engine
         from app.ml.predictor import predictor
 
         weights = settings.FINAL_PIPELINE_WEIGHTS
@@ -220,16 +221,54 @@ class RecommendationEngine:
         w_body = weights.get("body_shape_compatibility", 0.10)
         w_nov = weights.get("novelty", 0.05)
 
-        # 1. Retrieve candidates using RAG semantic search
-        fetch_candidate_count = max(12, count * 3)
+        # 0. Enforce exact outfitType and category constraints
+        allowed_outfit_types = taxonomy_engine.resolve_allowed_outfit_types(prefs)
+        target_category = taxonomy_engine.determine_target_category(prefs)
+
+        eligible_catalog = taxonomy_engine.filter_catalog(
+            self.catalog,
+            target_category=target_category,
+            allowed_outfit_types=allowed_outfit_types
+        )
+
+        logger.info("=" * 60)
+        logger.info("Chic Genie Recommendation Engine Diagnostics:")
+        logger.info("  5. BACKEND RECEIVED preferences.outfitTypes: %s", getattr(prefs, 'outfitTypes', []))
+        logger.info("  6. BACKEND RECEIVED preferences.outfitType:  %s", getattr(prefs, 'outfitType', ''))
+        logger.info("  7. resolve_allowed_outfit_types() result:   %s", allowed_outfit_types or "None (All types allowed)")
+        logger.info("  8. Candidates before exact filter:          %d", len(self.catalog))
+        logger.info("  9. Candidates after exact filter:           %d", len(eligible_catalog))
+        logger.info("=" * 60)
+
+        # 1. Retrieve candidates using RAG semantic search with exact constraint filtering
+        fetch_candidate_count = max(15, count * 4)
         rag_candidates = rag_service.retrieve_candidates(
             prefs=prefs,
             top_k=fetch_candidate_count,
-            recently_shown=recently_shown
+            recently_shown=recently_shown,
+            target_category=target_category,
+            allowed_outfit_types=allowed_outfit_types
         )
 
         if not rag_candidates:
-            raise ValueError("RAG service returned empty candidates pool.")
+            logger.warning("RAG service returned empty candidates pool. Using filtered catalog fallback.")
+            filtered_catalog = taxonomy_engine.filter_catalog(
+                self.catalog,
+                target_category=target_category,
+                allowed_outfit_types=allowed_outfit_types
+            )
+            rag_candidates = [
+                {
+                    "id": str(item.get("id")),
+                    "name": item.get("name", ""),
+                    "category": item.get("category", ""),
+                    "outfitType": item.get("outfitType", ""),
+                    "similarity_score": 0.70,
+                    "raw_catalog_item": item,
+                    "metadata": item
+                }
+                for item in filtered_catalog
+            ]
 
         # 2. Score candidates with multi-factor fusion
         scored_candidates: List[Dict[str, Any]] = []
@@ -304,6 +343,11 @@ class RecommendationEngine:
             except Exception as e:
                 logger.error("Error formatting Outfit model for %s: %s", item.get("id"), e)
 
+        logger.info("10. Final Recommendation IDs + OutfitTypes:")
+        for r in results:
+            logger.info("   - ID: %s | Type: %s | Cat: %s | Name: %s", r.id, r.outfitType, r.category, r.name)
+        logger.info("=" * 60)
+
         return results
 
     def _recommend_heuristic_fallback(
@@ -317,9 +361,20 @@ class RecommendationEngine:
         Fallback heuristic rule-based recommender.
         """
         from app.services.llm_service import llm_service
+        from app.services.taxonomy import taxonomy_engine
+
         catalog = self.catalog or load_fashion_catalog()
         if not catalog:
             return []
+
+        allowed_outfit_types = taxonomy_engine.resolve_allowed_outfit_types(prefs)
+        target_category = taxonomy_engine.determine_target_category(prefs)
+
+        catalog = taxonomy_engine.filter_catalog(
+            catalog,
+            target_category=target_category,
+            allowed_outfit_types=allowed_outfit_types
+        )
 
         scored_candidates = []
         for outfit in catalog:

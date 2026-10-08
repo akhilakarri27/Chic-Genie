@@ -82,77 +82,62 @@ export const WEATHERS = [
 ];
 
 export const OUTFIT_TYPES = [
-  // Original Types
-  { id: 'dress', label: 'Dress', icon: '👗', desc: 'Midi slip, sundress, or wrap dress', category: 'WESTERN' },
-  { id: 'top_bottom', label: 'Top + Bottom', icon: '👚', desc: 'Coordinated separates', category: 'WESTERN' },
-  { id: 'saree', label: 'Saree', icon: '🥻', desc: 'Organza, Banarasi, or silk drapes', category: 'ETHNIC' },
-  { id: 'kurti_bottom', label: 'Kurti + Bottom', icon: '🪷', desc: 'Straight kurti with palazzos or pants', category: 'ETHNIC' },
-  { id: 'shirt_trousers', label: 'Shirt + Trousers', icon: '👔', desc: 'Crisp button-down & tailored pants', category: 'BUSINESS' },
-  { id: 'jeans_top', label: 'Jeans + Top', icon: '👖', desc: 'Denim staple with curated top', category: 'CASUAL' },
-  { id: 'coord_set', label: 'Co-ord Set', icon: '✨', desc: 'Monochromatic matching two-piece', category: 'SEPARATES' },
-  { id: 'skirt_top', label: 'Skirt + Top', icon: '🎀', desc: 'Pleated midi, slip skirt or A-line', category: 'CASUAL' },
-  { id: 'jumpsuit', label: 'Jumpsuit', icon: '🧥', desc: 'One-piece tailored statement', category: 'WESTERN' },
+  // Definitive Taxonomy - Traditional
+  { id: 'lehenga_choli', label: 'Lehenga Choli', icon: '🥻', desc: 'Voluminous flared skirt with ornate choli', category: 'ETHNIC' },
+  { id: 'sharara', label: 'Sharara', icon: '🪷', desc: 'Flared tiered pants with short kurti ensemble', category: 'ETHNIC' },
+  { id: 'long_dress', label: 'Long Dress', icon: '✨', desc: 'Floor-sweeping regal Anarkali & ethnic gown', category: 'ETHNIC' },
 
-  // Western Dresses
+  // Definitive Taxonomy - Western
+  { id: 'jumpsuit', label: 'Jumpsuit', icon: '🧥', desc: 'One-piece tailored chic statement', category: 'WESTERN' },
+  { id: 'co_ords', label: 'Co-ords', icon: '✨', desc: 'Tailored matching two-piece coordinate', category: 'WESTERN' },
+  { id: 'coord_set', label: 'Co-ord Set', icon: '👚', desc: 'Monochromatic matching set ensemble', category: 'WESTERN' },
+
+  // Definitive Taxonomy - Streetwear
+  { id: 'oversized_hoodie_pants', label: 'Oversized Hoodie + Pants', icon: '🧥', desc: 'Urban utility fit with oversized fleece & pants', category: 'STREETWEAR' },
+  { id: 'graphic_layered', label: 'Graphic Layered', icon: '🛹', desc: 'Layered graphic tee, flannel, & relaxed bottom', category: 'STREETWEAR' },
+  { id: 'cargo_sweatshirt', label: 'Cargo + Sweatshirt', icon: '🔥', desc: 'Boxy sweatshirt with multi-pocket utility cargo', category: 'STREETWEAR' },
+
+  // Definitive Taxonomy - Professional
+  { id: 'blazer_outfit', label: 'Blazer Outfit', icon: '💼', desc: 'Full tailored blazer with structured trousers', category: 'BUSINESS' },
+  { id: 'blouse_pencil_pant', label: 'Blouse + Pencil-Cut Pant', icon: '👔', desc: 'Crisp blouse with tailored pencil-cut trousers', category: 'BUSINESS' },
+
+  // Additional Western & Casual Types
+  { id: 'dress', label: 'Dress', icon: '👗', desc: 'Midi slip, sundress, or wrap dress', category: 'WESTERN' },
   { id: 'bodycon_dress', label: 'Bodycon Dress', icon: '👗', desc: 'Sculpted form-fitting cocktail silhouette', category: 'WESTERN' },
   { id: 'wrap_dress', label: 'Wrap Dress', icon: '👗', desc: 'Cinched waist V-neck flattering drape', category: 'WESTERN' },
-  { id: 'maxi_dress', label: 'Maxi Dress', icon: '👗', desc: 'Graceful ankle-grazing fluid length', category: 'WESTERN' },
-  { id: 'midi_dress', label: 'Midi Dress', icon: '👗', desc: 'Calf-length elegant timeless silhouette', category: 'WESTERN' },
-  { id: 'mini_dress', label: 'Mini Dress', icon: '👗', desc: 'Chic above-knee playful cut', category: 'WESTERN' },
   { id: 'slip_dress', label: 'Slip Dress', icon: '👗', desc: 'Silk satin cowl-neck bias drape', category: 'WESTERN' },
-  { id: 'sundress', label: 'Sundress', icon: '👗', desc: 'Breezy cotton floral summer dress', category: 'CASUAL' },
-  { id: 'a_line_dress', label: 'A-Line Dress', icon: '👗', desc: 'Fitted bodice with gently flared skirt', category: 'WESTERN' },
-  { id: 'fit_and_flare_dress', label: 'Fit-and-Flare Dress', icon: '👗', desc: 'Defined waist with voluminous skirt', category: 'WESTERN' },
-  { id: 'pleated_dress', label: 'Pleated Dress', icon: '👗', desc: 'Accordion pleats with fluid motion', category: 'WESTERN' },
   { id: 'shirt_dress', label: 'Shirt Dress', icon: '👗', desc: 'Collared button-down with waist belt', category: 'WESTERN' },
-  { id: 'blazer_dress', label: 'Blazer Dress', icon: '💼', desc: 'Double-breasted structured power mini', category: 'BUSINESS' },
-  { id: 'sweater_dress', label: 'Sweater Dress', icon: '🧶', desc: 'Cozy ribbed knit silhouette', category: 'CASUAL' },
-  { id: 'little_black_dress', label: 'Little Black Dress (LBD)', icon: '🖤', desc: 'The iconic timeless evening staple', category: 'WESTERN' },
+  { id: 'maxi_dress', label: 'Maxi Dress', icon: '👗', desc: 'Graceful ankle-grazing fluid length', category: 'WESTERN' },
+  { id: 'top_bottom', label: 'Top + Bottom', icon: '👚', desc: 'Coordinated separates', category: 'WESTERN' },
+  { id: 'jeans_top', label: 'Jeans + Top', icon: '👖', desc: 'Denim staple with curated top', category: 'CASUAL' },
+  { id: 'skirt_top', label: 'Skirt + Top', icon: '🎀', desc: 'Pleated midi, slip skirt or A-line', category: 'CASUAL' },
 
-  // Western & Casual Separates
-  { id: 'top_wide_leg', label: 'Top + Wide-Leg Pants', icon: '👖', desc: 'High-waist wide trousers & chic top', category: 'SEPARATES' },
-  { id: 'crop_top_high_waist', label: 'Crop Top + High-Waist Bottom', icon: '👚', desc: 'Proportioned modern casual fit', category: 'SEPARATES' },
-  { id: 'blouse_wide_leg', label: 'Blouse + Wide-Leg Trousers', icon: '👔', desc: 'Fluid silk blouse & tailored pants', category: 'SEPARATES' },
-  { id: 'cardigan_jeans', label: 'Cardigan + Jeans', icon: '🧶', desc: 'Cozy cropped knit with vintage denim', category: 'CASUAL' },
-  { id: 'sweater_skirt', label: 'Sweater + Skirt', icon: '🎀', desc: 'Oversized knit tucked in pleated midi', category: 'SEPARATES' },
-  { id: 'denim_jacket_dress', label: 'Denim Jacket + Dress', icon: '🧥', desc: 'Layered casual outerwear combo', category: 'CASUAL' },
-  { id: 'leather_jacket_jeans', label: 'Leather Jacket + Jeans', icon: '🖤', desc: 'Edgy moto jacket & straight denim', category: 'STREETWEAR' },
+  // Additional Ethnic Types
+  { id: 'saree', label: 'Saree', icon: '🥻', desc: 'Organza, Banarasi, or silk drapes', category: 'ETHNIC' },
+  { id: 'silk_saree', label: 'Silk Saree', icon: '🥻', desc: 'Kanjeevaram / Banarasi pure silk weave', category: 'ETHNIC' },
+  { id: 'organza_saree', label: 'Organza Saree', icon: '🥻', desc: 'Sheer pastel organza with zari border', category: 'ETHNIC' },
+  { id: 'anarkali_suit', label: 'Anarkali Suit', icon: '🪷', desc: 'Regal flared floor-length ethnic suit', category: 'ETHNIC' },
+  { id: 'kurti_palazzo', label: 'Kurti + Palazzo', icon: '🪷', desc: 'Airy Chikankari kurti with wide palazzo', category: 'ETHNIC' },
+  { id: 'kurti_bottom', label: 'Kurti + Bottom', icon: '🪷', desc: 'Straight kurti with palazzos or pants', category: 'ETHNIC' },
+  { id: 'sharara_set', label: 'Sharara Set', icon: '🪷', desc: 'Flared tiered pants with short kurti', category: 'ETHNIC' },
 
-  // Business & Professional
+  // Additional Professional & Lifestyle
+  { id: 'shirt_trousers', label: 'Shirt + Trousers', icon: '👔', desc: 'Crisp button-down & tailored pants', category: 'BUSINESS' },
   { id: 'blazer_trousers', label: 'Blazer + Structured Trousers', icon: '💼', desc: 'Full tailored power suiting', category: 'BUSINESS' },
   { id: 'blazer_pencil_skirt', label: 'Blazer + Pencil Skirt', icon: '💼', desc: 'Executive formal boardroom ensemble', category: 'BUSINESS' },
   { id: 'waistcoat_trousers', label: 'Waistcoat + Trousers', icon: '👔', desc: 'Tailored vest & wide trouser coordinate', category: 'BUSINESS' },
   { id: 'three_piece_suit', label: 'Three-Piece Suit', icon: '👔', desc: 'Blazer, tailored vest and pleated pants', category: 'BUSINESS' },
   { id: 'sheath_dress', label: 'Sheath Dress', icon: '👗', desc: 'Tailored knee-length structured dress', category: 'BUSINESS' },
 
-  // Ethnic & Heritage
-  { id: 'silk_saree', label: 'Silk Saree', icon: '🥻', desc: 'Kanjeevaram / Banarasi pure silk weave', category: 'ETHNIC' },
-  { id: 'organza_saree', label: 'Organza Saree', icon: '🥻', desc: 'Sheer pastel organza with zari border', category: 'ETHNIC' },
-  { id: 'contemporary_saree', label: 'Contemporary Pre-Draped Saree', icon: '🥻', desc: 'Ready-to-wear pleated designer drape', category: 'ETHNIC' },
-  { id: 'lehenga_choli', label: 'Lehenga Choli', icon: '🥻', desc: 'Voluminous flared skirt with ornate choli', category: 'ETHNIC' },
-  { id: 'anarkali_suit', label: 'Anarkali Suit', icon: '🪷', desc: 'Regal flared floor-length ethnic suit', category: 'ETHNIC' },
-  { id: 'sharara_set', label: 'Sharara Set', icon: '🪷', desc: 'Flared tiered pants with short kurti', category: 'ETHNIC' },
-  { id: 'kurti_palazzo', label: 'Kurti + Palazzo', icon: '🪷', desc: 'Airy Chikankari kurti with wide palazzo', category: 'ETHNIC' },
-  { id: 'kurti_jeans', label: 'Kurti + Jeans', icon: '👖', desc: 'Indo-Western fusion college & daily style', category: 'ETHNIC' },
-  { id: 'ethnic_kaftan', label: 'Ethnic Kaftan Dress', icon: '🥻', desc: 'Embroidered silk kaftan with tassel ties', category: 'ETHNIC' },
-
-  // Activewear & Sports
-  { id: 'sports_bra_leggings', label: 'Sports Bra + Leggings', icon: '🧘', desc: 'High-waisted compression workout set', category: 'ACTIVE' },
-  { id: 'yoga_set', label: 'Yoga / Pilates Set', icon: '🧘', desc: 'Seamless butter-soft activewear coordinate', category: 'ACTIVE' },
-  { id: 'tennis_skirt_set', label: 'Tennis Skirt Set', icon: '🎾', desc: 'Pleated athletic skirt & performance polo', category: 'ACTIVE' },
-  { id: 'hoodie_joggers', label: 'Comfy Hoodie + Joggers', icon: '🛋️', desc: 'Fleece lounge set for travel & relaxation', category: 'SPORTS' },
-  { id: 'oversized_sweatshirt_leggings', label: 'Oversized Sweatshirt + Tights', icon: '🏃', desc: 'Effortless airport and running style', category: 'SPORTS' },
-
-  // Streetwear
+  // Streetwear & Casual Variants
   { id: 'hoodie_cargo_pants', label: 'Oversized Hoodie + Cargo Pants', icon: '🧥', desc: 'Urban utility fit with chunky sneakers', category: 'STREETWEAR' },
   { id: 'graphic_tee_baggy_jeans', label: 'Graphic Tee + Baggy Jeans', icon: '🛹', desc: '90s skater vintage streetwear', category: 'STREETWEAR' },
   { id: 'bomber_parachute_pants', label: 'Bomber Jacket + Parachute Pants', icon: '🔥', desc: 'High-energy modern runway streetwear', category: 'STREETWEAR' },
 
-  // Boho & Preppy
+  // Active & Aesthetic
+  { id: 'yoga_set', label: 'Yoga / Pilates Set', icon: '🧘', desc: 'Seamless butter-soft activewear coordinate', category: 'ACTIVE' },
   { id: 'boho_maxi_dress', label: 'Boho Tiered Maxi Dress', icon: '🌾', desc: 'Flowy peasant tiers, lace and earth tones', category: 'BOHO' },
-  { id: 'peasant_blouse_skirt', label: 'Peasant Blouse + Tiered Skirt', icon: '🌾', desc: 'Romantic crochet & bohemian drape', category: 'BOHO' },
   { id: 'preppy_cardigan_skirt', label: 'Sweater Vest + Pleated Skirt', icon: '🎾', desc: 'Classic collegiate preppy coordinate', category: 'PREPPY' },
-
   { id: 'surprise_me', label: 'Surprise Me', icon: '✨', desc: 'Let Chic Genie select the optimal format', category: 'WESTERN' }
 ];
 

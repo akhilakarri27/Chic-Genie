@@ -49,7 +49,9 @@ export default function Home() {
   const { 
     navigateTo, 
     savedLooks, 
+    preferences,
     setPreferences, 
+    resetPreferences,
     generateRecommendationsFromPreferences,
     setActiveWhyLook,
     setActiveCustomizeOutfit,
@@ -57,8 +59,15 @@ export default function Home() {
   } = useApp();
 
   const handleLaunchPreset = (preset) => {
-    setPreferences(prev => ({ ...prev, ...preset.prefs }));
-    generateRecommendationsFromPreferences(preset.prefs);
+    const ot = preset.prefs.outfitType || '';
+    const freshPrefs = {
+      ...preferences,
+      ...preset.prefs,
+      outfitTypes: ot ? [ot] : [],
+      outfitType: ot
+    };
+    setPreferences(freshPrefs);
+    generateRecommendationsFromPreferences(freshPrefs);
   };
 
   return (
@@ -108,7 +117,10 @@ export default function Home() {
               id="home-create-look-btn"
               className="btn-primary" 
               style={{ padding: '1rem 2.25rem', fontSize: '1.02rem' }}
-              onClick={() => navigateTo('preferences')}
+              onClick={() => {
+                resetPreferences();
+                navigateTo('preferences');
+              }}
             >
               <Sparkles size={18} />
               <span>✨ Create a Look</span>

@@ -7,15 +7,16 @@ const AppContext = createContext(null);
 const DEFAULT_PREFERENCES = {
   bodyShape: '',
   occasion: 'college',
-  styles: ['cute', 'casual_vibe'],
+  styles: [],
   weather: 'warm',
-  outfitType: 'jeans_top',
-  colors: ['pink', 'blue', 'pastel'],
+  outfitTypes: [],
+  outfitType: '',
+  colors: [],
   palette: 'soft_pastel',
   fit: 'relaxed',
   comfort: 'comfort_first',
   footwear: 'sneakers',
-  accessories: ['minimal', 'handbag'],
+  accessories: [],
   avoid: ['nothing_to_avoid']
 };
 
@@ -43,7 +44,7 @@ export function AppProvider({ children }) {
   const [recommendations, setRecommendations] = useState(() => getRecommendedOutfits(DEFAULT_PREFERENCES, 3, 0));
   const [seedOffset, setSeedOffset] = useState(0);
 
-  const setBodyShape = async (shape) => {
+  const setBodyShape = (shape) => {
     setBodyShapeState(shape);
     try {
       localStorage.setItem('chic_genie_body_shape', shape);
@@ -52,17 +53,6 @@ export function AppProvider({ children }) {
     }
     const updatedPrefs = { ...preferences, bodyShape: shape };
     setPreferences(updatedPrefs);
-    
-    // Fetch fresh recommendations from FastAPI backend for updated silhouette
-    try {
-      const backendRecs = await fetchRecommendations(updatedPrefs, 3, 0);
-      if (backendRecs && backendRecs.length > 0) {
-        setRecommendations(backendRecs);
-      }
-    } catch (error) {
-      const fallbackRecs = getRecommendedOutfits(updatedPrefs, 3, 0);
-      setRecommendations(fallbackRecs);
-    }
   };
   
   // Saved looks with initial sample saved items from mock data
@@ -149,28 +139,39 @@ export function AppProvider({ children }) {
     fetchRecommendations(preferences, 3, 0, [])
       .then(recs => {
         if (isMounted && recs && recs.length > 0) {
+          console.log('[AppContext] Mount fetch: SOURCE = BACKEND_AI', recs.map(r => ({ id: r.id, outfitType: r.outfitType, name: r.name })));
           setRecommendations(recs);
         }
       })
-      .catch(() => {
-        // Retain initial state gracefully if backend is booting
+      .catch((err) => {
+        console.warn('[AppContext] Mount fetch: SOURCE = MOCK_FALLBACK (Initial server warming)', err);
       });
     return () => { isMounted = false; };
   }, []);
 
+  const resetPreferences = () => {
+    setPreferences({
+      ...DEFAULT_PREFERENCES,
+      bodyShape: bodyShape || ''
+    });
+  };
+
   // Generate recommendations from preferences via FastAPI Backend
   const generateRecommendationsFromPreferences = async (customPrefs = null) => {
     const prefsToUse = customPrefs || preferences;
-    const currentlyDisplayedIds = recommendations.map(r => r.id);
+    console.log('[AppContext] generateRecommendationsFromPreferences called with:', prefsToUse);
     try {
-      const newRecs = await fetchRecommendations(prefsToUse, 3, 0, currentlyDisplayedIds);
+      const newRecs = await fetchRecommendations(prefsToUse, 3, 0, []);
       if (newRecs && newRecs.length > 0) {
+        console.log('[AppContext] Recommendations generated successfully: SOURCE = BACKEND_AI', newRecs.map(r => ({ id: r.id, outfitType: r.outfitType, name: r.name })));
         setRecommendations(newRecs);
       } else {
+        console.warn('[AppContext] Empty backend response: SOURCE = MOCK_FALLBACK');
         const fallback = getRecommendedOutfits(prefsToUse, 3, 0);
         setRecommendations(fallback);
       }
     } catch (error) {
+      console.error('[AppContext] Backend API error: SOURCE = MOCK_FALLBACK', error);
       showToast('Chic Genie styling engine is temporarily unavailable. Please try again.', 'error', '⚠️');
       const fallback = getRecommendedOutfits(prefsToUse, 3, 0);
       setRecommendations(fallback);
@@ -187,14 +188,17 @@ export function AppProvider({ children }) {
     try {
       const newRecs = await fetchRecommendations(preferences, 3, nextSeed, currentlyDisplayedIds);
       if (newRecs && newRecs.length > 0) {
+        console.log('[AppContext] Regenerate: SOURCE = BACKEND_AI', newRecs.map(r => ({ id: r.id, outfitType: r.outfitType, name: r.name })));
         setRecommendations(newRecs);
         showToast('Curated 3 fresh looks tailored to your recipe', 'info', '🔄');
       } else {
+        console.warn('[AppContext] Regenerate empty response: SOURCE = MOCK_FALLBACK');
         const fallback = getRecommendedOutfits(preferences, 3, nextSeed, currentlyDisplayedIds);
         setRecommendations(fallback);
         showToast('Curated 3 fresh looks tailored to your recipe', 'info', '🔄');
       }
     } catch (error) {
+      console.error('[AppContext] Regenerate error: SOURCE = MOCK_FALLBACK', error);
       showToast('Chic Genie styling engine is temporarily unavailable. Please try again.', 'error', '⚠️');
       const fallback = getRecommendedOutfits(preferences, 3, nextSeed, currentlyDisplayedIds);
       setRecommendations(fallback);
@@ -253,6 +257,7 @@ export function AppProvider({ children }) {
         setBodyShape,
         preferences,
         setPreferences,
+        resetPreferences,
         recommendations,
         generateRecommendationsFromPreferences,
         regenerateRecommendations,

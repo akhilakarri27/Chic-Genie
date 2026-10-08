@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 
 export default function Navbar() {
-  const { currentRoute, navigateTo, savedLooks, userProfile } = useApp();
+  const { currentRoute, navigateTo, savedLooks, userProfile, resetPreferences } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // If we are on opening screen, navbar is hidden
@@ -23,6 +23,9 @@ export default function Navbar() {
   }
 
   const handleNav = (route) => {
+    if (route === 'preferences') {
+      resetPreferences();
+    }
     navigateTo(route);
     setMobileMenuOpen(false);
   };
